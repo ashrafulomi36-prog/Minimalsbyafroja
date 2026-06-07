@@ -1,0 +1,7 @@
+# Robots.txt for Minimals By Afroja
+# Optimized for Googlebot crawler optimization
+
+User-agent: *
+Allow: /
+
+Sitemap: https://minimalsbyafroja.com/sitemap.xml

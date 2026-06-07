@@ -1,0 +1,6 @@
+{
+  "name": "Minimals By Afroja",
+  "description": "Premium luxury cake shop website for a handcrafted Bangladeshi cake business, with dynamic BDT calculator and interactive WhatsApp checkout.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
