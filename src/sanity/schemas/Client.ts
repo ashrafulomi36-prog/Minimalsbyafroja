@@ -8,7 +8,7 @@ import imageUrlBuilder from '@sanity/image-url';
 import { Product } from '../types';
 
 // Read configuration from environment variables
-const projectId = (import.meta as any).env?.VITE_SANITY_PROJECT_ID || 'yvj5t8qp'; // Use custom project ID or fallback
+const projectId = (import.meta as any).env?.VITE_SANITY_PROJECT_ID || 'qz6c392v'; // Use custom project ID or fallback
 const dataset = (import.meta as any).env?.VITE_SANITY_DATASET || 'production';
 const apiVersion = '2023-01-01';
 
