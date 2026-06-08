@@ -4,16 +4,16 @@
  */
 
 import { Product, CategoryType } from '../types';
-import { products } from '../data/products';
 import ProductCard from './ProductCard';
 import { Sparkles, ArrowLeft } from 'lucide-react';
 
 interface CategoryPageProps {
   categorySlug: string; // 'cakes' | 'ice-cream' | 'brownies'
   onNavigate: (page: string) => void;
+  products: Product[];
 }
 
-export default function CategoryPage({ categorySlug, onNavigate }: CategoryPageProps) {
+export default function CategoryPage({ categorySlug, onNavigate, products }: CategoryPageProps) {
   // Map route slugs to actual schema category types
   const categoryMapping: { [key: string]: { label: string; type: CategoryType; desc: string } } = {
     cakes: {
