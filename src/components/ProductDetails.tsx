@@ -4,7 +4,6 @@
  */
 
 import { Product } from '../types';
-import { products } from '../data/products';
 import GallerySlider from './GallerySlider';
 import OrderForm from './OrderForm';
 import { ArrowLeft, CheckCircle, Clock, ShieldCheck, Heart, Sparkles } from 'lucide-react';
@@ -12,9 +11,10 @@ import { ArrowLeft, CheckCircle, Clock, ShieldCheck, Heart, Sparkles } from 'luc
 interface ProductDetailsProps {
   productSlug: string;
   onNavigate: (page: string) => void;
+  products: Product[];
 }
 
-export default function ProductDetails({ productSlug, onNavigate }: ProductDetailsProps) {
+export default function ProductDetails({ productSlug, onNavigate, products }: ProductDetailsProps) {
   // Safe find from slugs
   const product = products.find((p) => p.slug === productSlug);
 
