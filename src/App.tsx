@@ -13,11 +13,15 @@ import ProductDetails from './components/ProductDetails';
 import ContactPage from './components/ContactPage';
 import QueriesPage from './components/QueriesPage';
 import { products } from './data/products';
+import { fetchProducts } from './sanity/client';
+import { Product } from './types';
 import { ChefHat, Flame, Shield, Truck, Sparkles, Facebook, Instagram, Heart, ArrowRight } from 'lucide-react';
 
 export default function App() {
   // Navigation / Routing State based on URL hash
   const [route, setRoute] = useState({ page: 'home', param: '' });
+  const [productsList, setProductsList] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Function to parse the hash URL
   const parseHash = () => {
@@ -45,6 +49,24 @@ export default function App() {
 
     // Listen to route changes (Back/Forward browser buttons)
     window.addEventListener('hashchange', parseHash);
+
+    // Fetch dynamic products from Sanity CMS with fallback
+    fetchProducts()
+      .then((data) => {
+        if (data && data.length > 0) {
+          setProductsList(data);
+        } else {
+          setProductsList(products);
+        }
+      })
+      .catch((err) => {
+        console.error('Sanity fetch failed. Falling back to static catalog:', err);
+        setProductsList(products);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+
     return () => window.removeEventListener('hashchange', parseHash);
   }, []);
 
@@ -54,7 +76,7 @@ export default function App() {
   };
 
   // Filter featured products for Home Page
-  const featuredProducts = products.filter((p) => p.featuredProduct);
+  const featuredProducts = productsList.filter((p) => p.featuredProduct);
 
   const whyChooseUsInfo = [
     {
@@ -207,9 +229,27 @@ export default function App() {
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                  {featuredProducts.map((prod) => (
-                    <ProductCard key={prod.id} product={prod} onNavigate={navigateTo} />
-                  ))}
+                  {isLoading ? (
+                    Array.from({ length: 3 }).map((_, index) => (
+                      <div key={index} className="bg-white rounded-3xl overflow-hidden border border-[#E8B4B8]/30 p-6 flex flex-col h-full space-y-4 animate-pulse">
+                        <div className="aspect-[4/3] bg-gray-200 rounded-2xl w-full" />
+                        <div className="space-y-2 flex-grow">
+                          <div className="h-4 bg-gray-200 rounded w-3/4" />
+                          <div className="h-3 bg-gray-200 rounded w-full" />
+                          <div className="h-3 bg-gray-200 rounded w-5/6" />
+                        </div>
+                        <div className="h-10 bg-gray-200 rounded w-full mt-4" />
+                      </div>
+                    ))
+                  ) : featuredProducts.length === 0 ? (
+                    <div className="col-span-full text-center py-12 text-gray-500 font-light">
+                      No featured products found.
+                    </div>
+                  ) : (
+                    featuredProducts.map((prod) => (
+                      <ProductCard key={prod.id} product={prod} onNavigate={navigateTo} />
+                    ))
+                  )}
                 </div>
 
               </div>
@@ -317,12 +357,12 @@ export default function App() {
 
         {/* CATEGORY CATALOG SCREEN */}
         {route.page === 'category' && (
-          <CategoryPage categorySlug={route.param} onNavigate={navigateTo} />
+          <CategoryPage categorySlug={route.param} onNavigate={navigateTo} products={productsList} />
         )}
 
         {/* DYNAMIC PRODUCT SPEC SCREEN */}
         {route.page === 'product' && (
-          <ProductDetails productSlug={route.param} onNavigate={navigateTo} />
+          <ProductDetails productSlug={route.param} onNavigate={navigateTo} products={productsList} />
         )}
 
         {/* CONTACT INFORMATION SCREEN */}
